@@ -1,7 +1,7 @@
 [project]
-name = "culture-agent-template"
+name = "ec2bedrock-cli"
 version = "0.3.1"
-description = "culture-agent-template — a clonable template for AgentCulture mesh agents."
+description = "Agent and CLI to manage EC2 instances running self-hosted LLM inference: warm up an instance and serve an LLM, then hibernate it on idle to power ongoing inference workloads such as ADLC. Built on ec2-cli for the underlying EC2 machine lifecycle."
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.12"
@@ -16,18 +16,18 @@ classifiers = [
 dependencies = []
 
 [project.urls]
-Homepage = "https://github.com/agentculture/culture-agent-template"
-Issues = "https://github.com/agentculture/culture-agent-template/issues"
+Homepage = "https://github.com/agentculture/ec2bedrock-cli"
+Issues = "https://github.com/agentculture/ec2bedrock-cli/issues"
 
 [project.scripts]
-culture-agent-template = "culture_agent_template.cli:main"
+ec2bedrock = "ec2bedrock.cli:main"
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["culture_agent_template"]
+packages = ["ec2bedrock"]
 
 [dependency-groups]
 dev = [
@@ -42,10 +42,10 @@ dev = [
 ]
 
 [tool.coverage.run]
-source = ["culture_agent_template"]
-omit = ["culture_agent_template/__pycache__/*"]
+source = ["ec2bedrock"]
+omit = ["ec2bedrock/__pycache__/*"]
 # Emit repo-relative paths in coverage.xml so SonarCloud maps them to
-# sonar.sources=culture_agent_template (absolute/.venv paths fail to map → empty coverage).
+# sonar.sources=ec2bedrock (absolute/.venv paths fail to map → empty coverage).
 relative_files = true
 
 [tool.coverage.report]
@@ -60,7 +60,7 @@ exclude_lines = [
 [tool.isort]
 profile = "black"
 line_length = 100
-known_first_party = ["culture_agent_template"]
+known_first_party = ["ec2bedrock"]
 
 [tool.black]
 line-length = 100
