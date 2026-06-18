@@ -23,6 +23,24 @@ uv run ec2bedrock learn   # self-teaching prompt (add --json)
 uv run teken cli doctor . --strict    # the agent-first rubric gate CI runs
 ```
 
+## Milestone 1 — cost estimator (offline)
+
+All commands below are offline / dry-run (no AWS calls). `compare` and `decide`
+encode the recommendation in the exit code: `ec2` = **0**, `token-provider` =
+**20**, `mixed` = **21**. Note that **0 doubles as "recommend EC2" and generic
+success** — a router that needs an unambiguous verdict should parse `--json`
+(the `recommendation`/`decision` field) rather than rely on exit code 0 alone;
+the non-zero codes (20/21) are unambiguous, and `1`/`2` remain user/environment
+errors.
+
+```bash
+ec2bedrock profile list
+ec2bedrock profile show qwen27b-awq-l40s
+ec2bedrock estimate --profile qwen27b-awq-l40s --hours 8 --days 22
+ec2bedrock compare --profile qwen27b-awq-l40s --input-tokens 300000000 --output-tokens 60000000 --provider-input-price 0.58 --provider-output-price 3.01
+ec2bedrock decide --workload meeting-mode --input-tokens 3000000 --output-tokens 500000 --sensitive --json
+```
+
 ## CLI
 
 | Verb | What it does |

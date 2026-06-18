@@ -155,9 +155,21 @@ wheels = [
 ]
 
 [[package]]
+name = "ec2-cli"
+version = "0.5.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/03/2d/961eba78afb7a21477e42eb52a91c3ded8364f81ce967e9b7f2f2f57c196/ec2_cli-0.5.0.tar.gz", hash = "sha256:e5777cda099f8652c46448409ee7fb3e26551c948dd9b074fa286ce5135358d1", size = 178026, upload-time = "2026-06-16T04:05:47.094Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/21/51/26a67844113b58e545ac7f72636ef1a972bb4c41247127e77f4e3176e08f/ec2_cli-0.5.0-py3-none-any.whl", hash = "sha256:b6a633860c2b9aafed522a629de57260b0a75c70dfe9428d7fc7a86a49a28a29", size = 47350, upload-time = "2026-06-16T04:05:48.323Z" },
+]
+
+[[package]]
 name = "ec2bedrock-cli"
-version = "0.3.2"
+version = "0.4.0"
 source = { editable = "." }
+dependencies = [
+    { name = "ec2-cli" },
+]
 
 [package.dev-dependencies]
 dev = [
@@ -172,6 +184,7 @@ dev = [
 ]
 
 [package.metadata]
+requires-dist = [{ name = "ec2-cli", specifier = ">=0.5" }]
 
 [package.metadata.requires-dev]
 dev = [

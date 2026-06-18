@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 Format follows [Keep a Changelog](https://keepachangelog.com/). This project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2026-06-18
+
+Milestone 1 of [#1](https://github.com/agentculture/ec2bedrock-cli/issues/1):
+the *prove-the-economics* layer — answer "is self-managed EC2 cheaper than a
+token provider for this ADLC workload?" entirely offline, with no EC2 lifecycle,
+no model serving, and no live AWS.
+
+### Added
+
+- **`ec2bedrock/cost/` domain** — an inference `Profile` schema with a bundled
+  `qwen27b-awq-l40s` default (g6e.xlarge / L40S / vLLM / AWQ); a `config.toml`
+  loader (stdlib `tomllib`) that layers user profiles + provider pricing over the
+  defaults; a scheduled-cost `estimate`; break-even math (output-only tokens/sec
+  and an input+output-aware figure); an EC2-vs-token-provider `compare` yielding a
+  recommendation (`ec2` / `token-provider` / `mixed`); and a `decide` router
+  verdict from workload class + sensitivity.
+- **CLI verbs** — `profile list` / `profile show`, `estimate`, `compare`, and
+  `decide`, all with `--json`. `compare` and `decide` encode the recommendation in
+  a deterministic process exit code (`ec2`=0, `token-provider`=20, `mixed`=21) so
+  an ADLC router can branch on it.
+- **`ec2-cli>=0.5` runtime dependency** — milestone 1 reuses ec2-cli's
+  boto3-free `ec2.aws.pricing.estimate_cost` for the per-machine arithmetic
+  through an adapter that normalises the `Estimate` shape across ec2-cli 0.5.x /
+  0.6.x. boto3 is never imported and no command touches a live AWS account.
+- **Docs** — `explain` catalog entries for the new verbs and a milestone-1
+  quickstart in the README.
+
 ## [0.3.2] - 2026-06-18
 
 ### Added

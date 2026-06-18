@@ -26,6 +26,11 @@ buildable/deployable package baseline. Clone it, rename the package, edit
 - `ec2bedrock overview` — descriptive snapshot of the agent.
 - `ec2bedrock doctor` — check the agent-identity invariants.
 - `ec2bedrock cli overview` — describe the CLI surface.
+- `ec2bedrock profile list` — list bundled + config.toml profiles.
+- `ec2bedrock profile show <name>` — show a single profile.
+- `ec2bedrock estimate` — offline scheduled EC2 cost estimate.
+- `ec2bedrock compare` — EC2 vs token-provider cost comparison.
+- `ec2bedrock decide` — workload router verdict.
 
 ## Exit-code policy
 
@@ -115,6 +120,64 @@ itself (distinct from the global `overview`, which describes the agent).
     ec2bedrock cli overview --json
 """
 
+_PROFILE = """\
+# ec2bedrock profile list / show
+
+List or display bundled and `config.toml` profiles. `profile list` enumerates
+all available profiles; `profile show <name>` prints the details for one
+profile. Both support `--json`.
+
+## Usage
+
+    ec2bedrock profile list
+    ec2bedrock profile list --json
+    ec2bedrock profile show <name>
+    ec2bedrock profile show <name> --json
+"""
+
+_ESTIMATE = """\
+# ec2bedrock estimate
+
+Offline scheduled EC2 cost estimate. Computes `compute = hourly_usd * hours *
+days` plus EBS costs. No AWS calls are made.
+
+## Usage
+
+    ec2bedrock estimate --profile <name> --hours H --days D
+    ec2bedrock estimate --profile <name> --hours H --days D --json
+"""
+
+_COMPARE = """\
+# ec2bedrock compare
+
+Compare EC2 cost against a token-based provider. Prints a recommendation
+(`ec2`, `token-provider`, or `mixed`) and the break-even point. The exit code
+encodes the recommendation: `0` for `ec2`, `20` for `token-provider`, `21` for
+`mixed`.
+
+## Usage
+
+    ec2bedrock compare --profile <name> --input-tokens N --output-tokens N \\
+        --provider-input-price P --provider-output-price P
+    ec2bedrock compare --profile <name> --input-tokens N --output-tokens N \\
+        --provider-input-price P --provider-output-price P --json
+"""
+
+_DECIDE = """\
+# ec2bedrock decide
+
+Workload router verdict. Given a workload label and token counts, returns a
+recommendation: sensitive workloads route to EC2, sporadic/interactive/off-hours
+workloads route to token-provider, sustained workloads are cost-driven. The
+exit code encodes the decision.
+
+## Usage
+
+    ec2bedrock decide --workload W --input-tokens N --output-tokens N
+    ec2bedrock decide --workload W --input-tokens N --output-tokens N --sensitive
+    ec2bedrock decide --workload W --input-tokens N --output-tokens N --json
+"""
+
 
 ENTRIES: dict[tuple[str, ...], str] = {
     (): _ROOT,
@@ -129,4 +192,10 @@ ENTRIES: dict[tuple[str, ...], str] = {
     ("doctor",): _DOCTOR,
     ("cli",): _CLI,
     ("cli", "overview"): _CLI,
+    ("profile",): _PROFILE,
+    ("profile", "list"): _PROFILE,
+    ("profile", "show"): _PROFILE,
+    ("estimate",): _ESTIMATE,
+    ("compare",): _COMPARE,
+    ("decide",): _DECIDE,
 }

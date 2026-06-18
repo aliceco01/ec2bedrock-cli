@@ -21,3 +21,9 @@ ignores:
   - ".teken/**"
   # Vendored skills are cited verbatim from guildmaster — do not reformat them.
   - ".claude/skills/**"
+  # devague-generated specs/plans/frames are machine artifacts: their titles are
+  # whole sentences (MD026) and they carry literal <text>/<file>/<name> frame
+  # tokens (MD033). Validated by the convergence gate, not the markdown linter.
+  - "docs/specs/**"
+  - "docs/plans/**"
+  - ".devague/**"

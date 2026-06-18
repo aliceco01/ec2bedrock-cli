@@ -63,10 +63,14 @@ def _argv_has_json(argv: list[str] | None) -> bool:
 
 def _build_parser() -> argparse.ArgumentParser:
     from ec2bedrock.cli._commands import cli as _cli_group
+    from ec2bedrock.cli._commands import compare as _compare_cmd
+    from ec2bedrock.cli._commands import decide as _decide_cmd
     from ec2bedrock.cli._commands import doctor as _doctor_cmd
+    from ec2bedrock.cli._commands import estimate as _estimate_cmd
     from ec2bedrock.cli._commands import explain as _explain_cmd
     from ec2bedrock.cli._commands import learn as _learn_cmd
     from ec2bedrock.cli._commands import overview as _overview_cmd
+    from ec2bedrock.cli._commands import profile as _profile_group
     from ec2bedrock.cli._commands import whoami as _whoami_cmd
 
     parser = _CliArgumentParser(
@@ -88,6 +92,11 @@ def _build_parser() -> argparse.ArgumentParser:
     _overview_cmd.register(sub)
     _doctor_cmd.register(sub)
     _cli_group.register(sub)
+    # Milestone-1 cost domain (issue #1): profile schema + offline cost answers.
+    _profile_group.register(sub)
+    _estimate_cmd.register(sub)
+    _compare_cmd.register(sub)
+    _decide_cmd.register(sub)
     # Register your own noun groups here:
     #   from ec2bedrock.cli._commands import my_noun as _my_noun_group
     #   _my_noun_group.register(sub)

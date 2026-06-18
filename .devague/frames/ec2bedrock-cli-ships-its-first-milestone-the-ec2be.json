@@ -1,0 +1,293 @@
+{
+  "slug": "ec2bedrock-cli-ships-its-first-milestone-the-ec2be",
+  "title": "ec2bedrock-cli ships its first milestone: the ec2bedrock CLI can define inference profiles and answer 'is self-managed EC2 cheaper than a token provider for this ADLC workload?' \u2014 estimate scheduled EC2 cost, compare against token-provider pricing, and explain break-even utilization \u2014 entirely offline, dry-run by default, with JSON output for a future ADLC router, and zero AWS mutation.",
+  "schema_version": 1,
+  "status": "exported",
+  "created": "2026-06-18T16:05:45Z",
+  "updated": "2026-06-18T16:18:10Z",
+  "claims": [
+    {
+      "id": "c1",
+      "kind": "announcement",
+      "text": "ec2bedrock-cli ships its first milestone: the ec2bedrock CLI can define inference profiles and answer 'is self-managed EC2 cheaper than a token provider for this ADLC workload?' \u2014 estimate scheduled EC2 cost, compare against token-provider pricing, and explain break-even utilization \u2014 entirely offline, dry-run by default, with JSON output for a future ADLC router, and zero AWS mutation.",
+      "origin": "user",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h1",
+          "text": "estimate, compare, and break-even all run with no network and no boto3 installed; --json emits a documented stable schema; no command mutates AWS.",
+          "status": "confirmed"
+        }
+      ],
+      "hard_questions": [],
+      "links": []
+    },
+    {
+      "id": "c2",
+      "kind": "audience",
+      "text": "ADLC/Culture engineers and the future model router deciding whether to wake EC2 GPU capacity or call a token provider, plus AWS clients evaluating self-hosted inference economics.",
+      "origin": "user",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h2",
+          "text": "the JSON output is router-consumable: stable keys + an explicit decision field + an exit code that encodes the recommendation, not just human-readable text.",
+          "status": "confirmed"
+        }
+      ],
+      "hard_questions": [],
+      "links": []
+    },
+    {
+      "id": "c3",
+      "kind": "after_state",
+      "text": "An engineer runs 'ec2bedrock profile show qwen27b-awq-l40s', 'ec2bedrock estimate --profile \u2026 --hours 8 --days 22', and 'ec2bedrock compare --profile \u2026 --input-tokens \u2026 --output-tokens \u2026' and gets a costed EC2-vs-token-provider recommendation with break-even utilization \u2014 no AWS account, nothing launched.",
+      "origin": "user",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h3",
+          "text": "all three commands produce correct, reproducible numbers from profile+args alone with zero AWS credentials present.",
+          "status": "confirmed"
+        }
+      ],
+      "hard_questions": [],
+      "links": []
+    },
+    {
+      "id": "c4",
+      "kind": "before_state",
+      "text": "Today ec2bedrock-cli is the culture-agent-template introspection scaffold (whoami/learn/explain/overview/doctor, empty runtime deps); issue #1's plan exists only as prose, no cost or profile logic.",
+      "origin": "user",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h4",
+          "text": "the new cost/profile code is additive \u2014 the existing introspection scaffold and its tests keep passing unchanged; runtime dependencies stay [].",
+          "status": "rejected"
+        },
+        {
+          "id": "h10",
+          "text": "the new cost/profile code is additive \u2014 the existing introspection scaffold (whoami/learn/explain/overview/doctor) and its tests pass unchanged; the only new runtime deps are ec2-cli (+PyYAML), both boto3-free on a base install.",
+          "status": "rejected"
+        },
+        {
+          "id": "h12",
+          "text": "the new cost/profile code is additive \u2014 the existing introspection scaffold (whoami/learn/explain/overview/doctor) and its tests pass unchanged; the ONLY new runtime dep is ec2-cli (itself boto3-free on a base install); config parsing is stdlib tomllib.",
+          "status": "confirmed"
+        }
+      ],
+      "hard_questions": [],
+      "links": []
+    },
+    {
+      "id": "c5",
+      "kind": "why_it_matters",
+      "text": "ADLC only pays off when sustained office-hours agent work beats token-provider economics; you must prove the economics on paper before spending on GPUs or building lifecycle/serving machinery.",
+      "origin": "user",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h5",
+          "text": "compare output states a clear recommendation (EC2 / token-provider / mixed) AND the break-even utilization, so economics are legible, not just two totals.",
+          "status": "confirmed"
+        }
+      ],
+      "hard_questions": [],
+      "links": []
+    },
+    {
+      "id": "c6",
+      "kind": "boundary",
+      "text": "Milestone 1 does NOT launch/stop/hibernate EC2 (Stage 2), does NOT serve a model/run vLLM (Stage 3), does NOT do schedules/fallback/Blackwell (Stages 5/6/8), and does NOT touch a live AWS account or the Pricing API \u2014 all pricing comes from a bundled static rate table.",
+      "origin": "user",
+      "status": "rejected",
+      "honesty_conditions": [
+        {
+          "id": "h6",
+          "text": "no milestone-1 code path imports boto3 or opens a socket; a test asserts no top-level boto3 import and that runtime dependencies stay [].",
+          "status": "rejected"
+        },
+        {
+          "id": "h11",
+          "text": "no milestone-1 code path imports boto3 or opens a socket; a test asserts estimate/compare/decide do not import boto3 and that pricing is read only from the profile + ec2-cli's boto3-free pricing module (no live AWS / Pricing API).",
+          "status": "confirmed"
+        }
+      ],
+      "hard_questions": [],
+      "links": []
+    },
+    {
+      "id": "c7",
+      "kind": "success_signal",
+      "text": "Issue #1's six first-milestone acceptance criteria pass: define a profile, estimate scheduled EC2 cost, compare against token-provider cost, explain break-even utilization, emit router JSON, and run dry-run with no AWS mutation \u2014 verified by tests with zero network/boto3.",
+      "origin": "user",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h7",
+          "text": "each of the six acceptance criteria maps to at least one passing test; the suite runs fully offline in CI.",
+          "status": "confirmed"
+        }
+      ],
+      "hard_questions": [],
+      "links": []
+    },
+    {
+      "id": "c8",
+      "kind": "decision",
+      "text": "Milestone-1 owns its cost math locally: a bundled static EC2 rate table + token-provider pricing + break-even formula, citing the *concept* from ec2-cli's aws/rates.py + pricing.py (cite-don't-import) rather than importing ec2-cli. Runtime dependencies stay []. Real ec2-cli machine-lifecycle coupling is deferred to Stage 2.",
+      "origin": "llm",
+      "status": "rejected",
+      "honesty_conditions": [],
+      "hard_questions": [],
+      "links": []
+    },
+    {
+      "id": "c9",
+      "kind": "decision",
+      "text": "A bundled default profile 'qwen27b-awq-l40s' (g6e.xlarge, L40S, vLLM, AWQ, $1.861/hr, 200GB) ships in-package so estimate/compare work with zero user config; user config layers on top.",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [],
+      "hard_questions": [],
+      "links": []
+    },
+    {
+      "id": "c10",
+      "kind": "requirement",
+      "text": "Every command supports --json with a documented stable schema; estimate and compare also encode the recommendation in the process exit code so a router can branch on it.",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h8",
+          "text": "estimate --json and compare --json validate against a documented schema in tests; compare's exit code maps deterministically to {EC2 / token-provider / mixed} and is documented.",
+          "status": "confirmed"
+        }
+      ],
+      "hard_questions": [],
+      "links": []
+    },
+    {
+      "id": "c11",
+      "kind": "requirement",
+      "text": "The break-even output answers issue #1's question: output-only break-even tokens/sec AND an input+output-aware break-even, so context-heavy ADLC workloads are modelled, not just output.",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h9",
+          "text": "break-even is reported two ways \u2014 output-only tokens/sec, and an input+output-aware figure given an assumed input:output ratio \u2014 matching issue #1's worked numbers (\u2248172 tok/s output-only; EC2 wins earlier once input is included).",
+          "status": "confirmed"
+        }
+      ],
+      "hard_questions": [],
+      "links": []
+    },
+    {
+      "id": "c12",
+      "kind": "decision",
+      "text": "FORK A (config format): default to stdlib-only loading (TOML via tomllib, or JSON) to preserve runtime deps = []; treat the issue's literal 'config.yaml' as YAML-optional-extra rather than adding PyYAML as the first hard dependency.",
+      "origin": "llm",
+      "status": "rejected",
+      "honesty_conditions": [],
+      "hard_questions": [],
+      "links": []
+    },
+    {
+      "id": "c13",
+      "kind": "decision",
+      "text": "FORK B (session ledger): defer the ledger (SQLite/JSONL) entirely to Stage 4; milestone-1 estimate/compare are pure functions of profile+args and write nothing. Stage 0's ledger bullet slips to Stage 4.",
+      "origin": "llm",
+      "status": "proposed",
+      "honesty_conditions": [],
+      "hard_questions": [],
+      "links": []
+    },
+    {
+      "id": "c14",
+      "kind": "decision",
+      "text": "FORK C (verb scope): ship 'profile list', 'profile show', 'estimate', 'compare' for milestone 1; park Stage-7's 'decide --json' router verb as an optional stretch, not required for the acceptance criteria.",
+      "origin": "llm",
+      "status": "rejected",
+      "honesty_conditions": [],
+      "hard_questions": [],
+      "links": []
+    },
+    {
+      "id": "c15",
+      "kind": "decision",
+      "text": "COUPLING: M1 takes a runtime dependency on ec2-cli and imports ec2.aws.pricing (estimate_cost, Estimate) for per-machine cost arithmetic + UNKNOWN-degradation. GPU hourly rate comes from profile.hourly_usd (ec2-cli's static table has no GPU/g6e rows); EBS from profile.storage_gb x a bundled EBS rate. boto3 stays OUT of M1 \u2014 it is ec2-cli's optional [aws] extra and M1 imports only the boto3-free pricing module.",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [],
+      "hard_questions": [],
+      "links": []
+    },
+    {
+      "id": "c16",
+      "kind": "decision",
+      "text": "VERBS: ship 'profile list', 'profile show', 'estimate', 'compare', AND 'decide --json' (workload-class + sensitive -> recommendation + exit code) \u2014 pulling Stage-7's router verb forward per the user's choice.",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [],
+      "hard_questions": [],
+      "links": []
+    },
+    {
+      "id": "c17",
+      "kind": "decision",
+      "text": "CONFIG: M1 loads ~/.ec2bedrock/config.yaml via PyYAML, added as a runtime dep alongside ec2-cli; the deps-empty constraint is intentionally relaxed for this milestone (ec2-cli is already a hard dep). Bundled default 'qwen27b-awq-l40s' profile ships so the tool works with zero config; user config layers/overrides. [Interpretation of the ambiguous Fork-A answer \u2014 user to veto if wrong.]",
+      "origin": "llm",
+      "status": "rejected",
+      "honesty_conditions": [],
+      "hard_questions": [],
+      "links": []
+    },
+    {
+      "id": "c18",
+      "kind": "assumption",
+      "text": "RISK: the injected-rate estimate_cost signature M1 targets is finalized on ec2-cli's unmerged spec/issue-4-per-machine-cost (->0.6.0); released 0.5.0 has an estimate_cost of possibly-different signature and no rates table. M1's first build task MUST pin ec2-cli to a PyPI version whose pricing API it verifies against, or sequence behind ec2-cli 0.6.0.",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [],
+      "hard_questions": [],
+      "links": []
+    },
+    {
+      "id": "c19",
+      "kind": "decision",
+      "text": "CONFIG: M1 loads ~/.ec2bedrock/config.toml via stdlib tomllib (py3.12); ec2-cli is the ONLY new runtime dependency. The bundled default 'qwen27b-awq-l40s' profile is a Python literal so the tool works with zero config; a user config.toml layers over / overrides it.",
+      "origin": "llm",
+      "status": "confirmed",
+      "honesty_conditions": [],
+      "hard_questions": [],
+      "links": []
+    },
+    {
+      "id": "c20",
+      "kind": "boundary",
+      "text": "Milestone 1 does NOT launch/stop/hibernate EC2 (Stage 2), does NOT serve a model/run vLLM (Stage 3), does NOT do schedules/fallback/Blackwell (Stages 5/6/8), and does NOT touch a live AWS account or the Pricing API \u2014 pricing is computed offline from the profile's hourly_usd plus ec2-cli's boto3-free estimate_cost arithmetic, never a live rate lookup.",
+      "origin": "user",
+      "status": "confirmed",
+      "honesty_conditions": [
+        {
+          "id": "h13",
+          "text": "no milestone-1 code path imports boto3 or opens a socket; a test asserts estimate/compare/decide do not import boto3 and that pricing is read only from the profile + ec2-cli's boto3-free pricing module (no live AWS / Pricing API).",
+          "status": "confirmed"
+        }
+      ],
+      "hard_questions": [],
+      "links": []
+    }
+  ],
+  "open_vagueness": [
+    {
+      "id": "v1",
+      "text": "coordinate ec2-cli to merge issue #4 (pricing.estimate_cost final signature + rates) to main and release the version ec2bedrock-cli M1 pins",
+      "kind": "follow_up",
+      "claim_id": null
+    }
+  ]
+}

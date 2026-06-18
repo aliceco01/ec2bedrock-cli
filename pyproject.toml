@@ -1,6 +1,6 @@
 [project]
 name = "ec2bedrock-cli"
-version = "0.3.2"
+version = "0.4.0"
 description = "Agent and CLI to manage EC2 instances running self-hosted LLM inference: warm up an instance and serve an LLM, then hibernate it on idle to power ongoing inference workloads such as ADLC. Built on ec2-cli for the underlying EC2 machine lifecycle."
 readme = "README.md"
 license = "Apache-2.0"
@@ -13,7 +13,11 @@ classifiers = [
     "Topic :: Software Development",
     "Intended Audience :: Developers",
 ]
-dependencies = []
+# ec2-cli supplies the boto3-free per-machine cost arithmetic (ec2.aws.pricing).
+# Its base install is dependency-free — boto3 is ec2-cli's optional [aws] extra,
+# which milestone 1 never installs or imports. Pinned >=0.5 (the released line on
+# PyPI); the _ec2cli adapter normalises the Estimate shape across 0.5.x/0.6.x.
+dependencies = ["ec2-cli>=0.5"]
 
 [project.urls]
 Homepage = "https://github.com/agentculture/ec2bedrock-cli"
