@@ -1,15 +1,15 @@
 [project]
 name = "ec2bedrock-cli"
-version = "0.3.1"
+version = "0.3.2"
 description = "Agent and CLI to manage EC2 instances running self-hosted LLM inference: warm up an instance and serve an LLM, then hibernate it on idle to power ongoing inference workloads such as ADLC. Built on ec2-cli for the underlying EC2 machine lifecycle."
 readme = "README.md"
-license = "MIT"
+license = "Apache-2.0"
 requires-python = ">=3.12"
 authors = [{name = "AgentCulture"}]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Programming Language :: Python :: 3.12",
-    "License :: OSI Approved :: MIT License",
+    "License :: OSI Approved :: Apache Software License",
     "Topic :: Software Development",
     "Intended Audience :: Developers",
 ]

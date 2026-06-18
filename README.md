@@ -18,8 +18,8 @@ Agent and CLI to manage EC2 instances running self-hosted LLM inference: warm up
 ```bash
 uv sync
 uv run pytest -n auto                 # run the test suite
-uv run ec2bedrock-cli whoami  # identity from culture.yaml
-uv run ec2bedrock-cli learn   # self-teaching prompt (add --json)
+uv run ec2bedrock whoami  # identity from culture.yaml (command is `ec2bedrock`; dist is `ec2bedrock-cli`)
+uv run ec2bedrock learn   # self-teaching prompt (add --json)
 uv run teken cli doctor . --strict    # the agent-first rubric gate CI runs
 ```
 
@@ -55,4 +55,4 @@ the `cicd` PR lane, deploy setup).
 
 ## License
 
-MIT — see [`LICENSE`](LICENSE).
+Apache 2.0 — see [`LICENSE`](LICENSE).

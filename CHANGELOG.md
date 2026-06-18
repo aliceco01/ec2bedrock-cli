@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file.
 Format follows [Keep a Changelog](https://keepachangelog.com/). This project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.2] - 2026-06-18
+
+### Added
+
+- **`ask-colleague` piloting verbs** (`monitor` / `guide` / `stop`) and the
+  `--watch` flag on `explore` / `review` / `write` — propagated by the
+  deterministic mass-update. `--watch` arms a flight so it can be watched
+  (`monitor`), guided mid-flight (`guide`), or cooperatively stopped (`stop`);
+  control applies at the running loop's next turn boundary. The pilot verbs are
+  pure `.colleague/flight/` file I/O and are exempt from the git-work-tree guard.
+
+### Fixed
+
+- **Command surface now matches the installed command.** The CLI command is
+  `ec2bedrock` (`[project.scripts]`), but the scaffold's help text, `explain`
+  catalog, `learn` map, and `README` examples still said `ec2bedrock-cli` (the
+  PyPI dist + mesh nick, not an invocable command). Swept the command-surface
+  references `ec2bedrock-cli` → `ec2bedrock` and added `("ec2bedrock",)` as the
+  primary `explain` catalog key (keeping `("ec2bedrock-cli",)` as a back-compat
+  alias). The dist name, mesh nick (`_FALLBACK_NICK`), and `_ISSUES_URL` stay
+  `ec2bedrock-cli`. Fixes the `explain_self` agent-first rubric check (the `lint`
+  CI gate was 25/26 → now 26/26).
+- **License metadata now matches the `LICENSE` file.** The repo ships an Apache
+  2.0 `LICENSE`, but `pyproject.toml` declared `license = "MIT"` with an MIT OSI
+  classifier and the `README` license line said MIT. Aligned `pyproject.toml`
+  (`license = "Apache-2.0"` + Apache OSI classifier) and the `README` line to
+  Apache 2.0 — a stale `culture-agent-template` scaffold value, not a relicense.
+
 ## [0.3.1] - 2026-06-13
 
 ### Changed

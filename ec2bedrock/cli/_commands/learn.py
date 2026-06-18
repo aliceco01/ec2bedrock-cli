@@ -1,4 +1,4 @@
-"""``ec2bedrock-cli learn`` — the learnability affordance.
+"""``ec2bedrock learn`` — the learnability affordance.
 
 Prints a structured self-teaching prompt. Must satisfy the agent-first rubric:
 >=200 chars and mention purpose, command map, exit codes, --json, and explain.
@@ -12,7 +12,7 @@ from ec2bedrock import __version__
 from ec2bedrock.cli._output import emit_result
 
 _TEXT = """\
-ec2bedrock-cli — a clonable template for AgentCulture mesh agents.
+ec2bedrock — a clonable template for AgentCulture mesh agents.
 
 Purpose
 -------
@@ -23,12 +23,12 @@ rename the package, and edit culture.yaml to mint a new agent.
 
 Commands
 --------
-  ec2bedrock-cli whoami             Identity from culture.yaml.
-  ec2bedrock-cli learn              This self-teaching prompt.
-  ec2bedrock-cli explain <path>...  Markdown docs for any noun/verb path.
-  ec2bedrock-cli overview           Descriptive snapshot of the agent.
-  ec2bedrock-cli doctor             Check the agent-identity invariants.
-  ec2bedrock-cli cli overview       Describe the CLI surface itself.
+  ec2bedrock whoami             Identity from culture.yaml.
+  ec2bedrock learn              This self-teaching prompt.
+  ec2bedrock explain <path>...  Markdown docs for any noun/verb path.
+  ec2bedrock overview           Descriptive snapshot of the agent.
+  ec2bedrock doctor             Check the agent-identity invariants.
+  ec2bedrock cli overview       Describe the CLI surface itself.
 
 Machine-readable output
 -----------------------
@@ -44,13 +44,13 @@ Exit-code policy
 
 More detail
 -----------
-  ec2bedrock-cli explain ec2bedrock-cli
+  ec2bedrock explain ec2bedrock
 """
 
 
 def _as_json_payload() -> dict[str, object]:
     return {
-        "tool": "ec2bedrock-cli",
+        "tool": "ec2bedrock",
         "version": __version__,
         "purpose": "Clonable scaffold for a new AgentCulture mesh agent.",
         "commands": [
@@ -67,7 +67,7 @@ def _as_json_payload() -> dict[str, object]:
             "2": "environment/setup error",
         },
         "json_support": True,
-        "explain_pointer": "ec2bedrock-cli explain <path>",
+        "explain_pointer": "ec2bedrock explain <path>",
     }
 
 

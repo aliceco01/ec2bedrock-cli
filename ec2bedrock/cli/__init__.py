@@ -70,8 +70,8 @@ def _build_parser() -> argparse.ArgumentParser:
     from ec2bedrock.cli._commands import whoami as _whoami_cmd
 
     parser = _CliArgumentParser(
-        prog="ec2bedrock-cli",
-        description="ec2bedrock-cli — a clonable template for AgentCulture mesh agents.",
+        prog="ec2bedrock",
+        description="ec2bedrock — a clonable template for AgentCulture mesh agents.",
     )
     parser.add_argument(
         "--version",
