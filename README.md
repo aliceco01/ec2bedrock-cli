@@ -50,6 +50,12 @@ passed as-is, the per-hour numbers flip the verdict to `token-provider`.
 `off-hours`, `sporadic` and `sensitive`; `sensitive` (or `--sensitive`) always
 routes to EC2.
 
+`compare` and `decide` also check the output tokens against the profile's
+`performance.expected_aggregate_tps`. When the workload needs more than one
+instance, the EC2 cost covers all of them, and `capacity.break_even_utilization`
+in the JSON shows how busy each instance must be for EC2 to cost the same as the
+provider (above 1.0, EC2 can't win on cost at those prices).
+
 ## CLI
 
 | Verb | What it does |

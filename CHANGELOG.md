@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 Format follows [Keep a Changelog](https://keepachangelog.com/). This project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0] - 2026-09-27
+
+### Added
+
+- `compare` (and so `decide`) checks throughput against the profile's `performance.expected_aggregate_tps`. A new `capacity` block in the output shows the output tokens/sec the workload needs over the window, how many instances that takes, and the break-even utilization issue #1 asks for: how busy each instance must be for EC2 to cost the same as the provider. The default profile must run at 95% of its 180 tok/s to beat output-only pricing, 49% with 5:1 input.
+
+### Changed
+
+- When the workload needs more than one instance, `ec2_usd` is the cost of all of them, and `decide` names the instance count in its reason. Before, `compare` priced one instance for any volume, so 1B output tokens in the default window came out as a $343.54 EC2 win, although one instance serves about 114M at most. It now takes 9 instances ($3,091.82), which is `mixed` against $3,010 of provider tokens.
+
 ## [0.6.2] - 2026-09-27
 
 ### Fixed

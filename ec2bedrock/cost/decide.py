@@ -76,8 +76,12 @@ def decide(
         input_usd_per_1m=input_usd_per_1m,
         output_usd_per_1m=output_usd_per_1m,
     )
+    fleet = ""
+    if cmp.capacity is not None and cmp.capacity.instances > 1:
+        fleet = f" for {cmp.capacity.instances} instances"
     reason = (
-        f"cost-driven ({workload}): EC2 {_usd(cmp.ec2_usd)} vs provider {_usd(cmp.provider_usd)}"
+        f"cost-driven ({workload}): EC2 {_usd(cmp.ec2_usd)}{fleet} "
+        f"vs provider {_usd(cmp.provider_usd)}"
     )
     return Decision(cmp.recommendation, reason, cmp.exit_code)
 

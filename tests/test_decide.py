@@ -29,7 +29,8 @@ class TestDecide:
         assert d.exit == 20
 
     def test_sustained_batch_high_volume_favours_ec2(self) -> None:
-        # Huge sustained volume: EC2 fixed cost << provider pay-per-token.
+        # Huge sustained volume: even the 18 instances it needs cost less
+        # than provider pay-per-token.
         d = decide("batch", 10_000_000_000, 2_000_000_000)
         assert d.target == "ec2"
         assert d.exit == 0

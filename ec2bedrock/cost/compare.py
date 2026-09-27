@@ -11,6 +11,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from ec2bedrock.cost.breakeven import BreakEven, break_even
+from ec2bedrock.cost.capacity import Capacity, assess, notes_for
 from ec2bedrock.cost.estimate import estimate
 from ec2bedrock.cost.profiles import Profile
 from ec2bedrock.cost.rates import provider_prices
@@ -35,6 +36,7 @@ class Comparison:
     input_tokens: int
     output_tokens: int
     notes: tuple[str, ...] = ()
+    capacity: Capacity | None = None
 
     @property
     def exit_code(self) -> int:
@@ -49,6 +51,7 @@ class Comparison:
             "recommendation": self.recommendation,
             "exit_code": self.exit_code,
             "break_even": self.break_even.to_dict() if self.break_even else None,
+            "capacity": self.capacity.to_dict() if self.capacity else None,
             "input_tokens": self.input_tokens,
             "output_tokens": self.output_tokens,
             "notes": list(self.notes),
@@ -71,11 +74,15 @@ def compare(
     rate + EBS); the token provider is pay-per-token. EC2 therefore wins at high
     sustained volume and the provider wins at low/sporadic volume — the whole
     ADLC economics question issue #1 frames.
+
+    The EC2 side is priced for as many instances as the output tokens need at
+    the profile's ``expected_aggregate_tps`` (see :mod:`ec2bedrock.cost.capacity`);
+    a profile without that figure is priced as one instance.
     """
     in_price, out_price = provider_prices(input_usd_per_1m, output_usd_per_1m)
 
     provider_usd = input_tokens * in_price / 1_000_000 + output_tokens * out_price / 1_000_000
-    ec2_usd = estimate(profile, hours, days).total_usd
+    per_instance_usd = estimate(profile, hours, days).total_usd
     ratio = (input_tokens / output_tokens) if output_tokens else 0.0
     # No hourly rate -> no break-even to compute (would divide by a missing rate).
     # Use `is not None` so a legitimate 0.0 rate is still a known rate, not "missing".
@@ -85,7 +92,13 @@ def compare(
         else None
     )
 
+    capacity = assess(profile, output_tokens, hours * days, be)
+    ec2_usd = per_instance_usd
     notes: list[str] = []
+    if capacity is not None:
+        if per_instance_usd is not None:
+            ec2_usd = per_instance_usd * capacity.instances
+        notes.extend(notes_for(capacity))
     if ec2_usd is None:
         recommendation = "token-provider"
         notes.append("EC2 cost UNKNOWN — cannot justify EC2")
@@ -106,4 +119,5 @@ def compare(
         input_tokens=input_tokens,
         output_tokens=output_tokens,
         notes=tuple(notes),
+        capacity=capacity,
     )

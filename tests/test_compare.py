@@ -46,7 +46,8 @@ class TestCompare:
         assert result.exit_code == 20
 
     def test_high_volume_favours_ec2(self) -> None:
-        # Huge sustained volume: provider ~$11,820 >> fixed EC2 ~$343.5/mo.
+        # Huge sustained volume: provider ~$11,820 >> EC2 ~$6,184 for the 18
+        # instances 2B output tokens need at the profile's 180 tok/s each.
         result = compare(
             self.profile,
             input_tokens=10_000_000_000,
@@ -56,6 +57,7 @@ class TestCompare:
         )
         assert result.recommendation == "ec2"
         assert result.exit_code == 0
+        assert result.capacity.instances == 18
 
     def test_unknown_ec2_cost_falls_back_to_provider(self) -> None:
         # A profile with no hourly rate -> EC2 cost UNKNOWN -> cannot justify EC2.
@@ -82,6 +84,7 @@ class TestCompare:
             "recommendation",
             "exit_code",
             "break_even",
+            "capacity",
             "input_tokens",
             "output_tokens",
             "notes",

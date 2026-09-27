@@ -163,6 +163,13 @@ Token counts are totals for the whole window (`--hours` x `--days`, default
 8 x 22 = 176 hours), not per hour. A per-hour figure must be multiplied by the
 window's hours first, or the verdict can flip.
 
+The output tokens are also checked against the profile's
+`performance.expected_aggregate_tps` (output tokens/sec one instance sustains).
+The `capacity` block reports the tok/s the workload needs over the window, how
+many instances that takes (`ec2_usd` covers all of them), and the break-even
+utilization: how busy each instance must be for EC2 to cost the same as the
+provider. Above 1.0, EC2 cannot win on cost at those prices.
+
 ## Usage
 
     ec2bedrock compare --profile <name> --input-tokens N --output-tokens N \\
