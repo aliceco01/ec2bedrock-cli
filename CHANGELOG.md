@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 Format follows [Keep a Changelog](https://keepachangelog.com/). This project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.1] - 2026-09-27
+
+### Fixed
+
+- `compare` and `decide` token flags now say they are totals for the whole `--hours` x `--days` window, not per hour. Issue #1's per-hour example (3M input + 0.5M output tokens an hour, where EC2 wins) returned `token-provider` when passed as-is. Every `estimate`, `compare` and `decide` flag now has help text, and the README `decide` example uses window totals.
+- `estimate`, `compare` and `decide` reject negative or non-finite numbers and `--hours` above 24 as a user error (exit 1 with a hint). Before, `--hours -8` printed a total of -$311.54 with exit 0.
+- `decide --workload sensitive` routes to EC2, like `--sensitive`. Before, it fell through to the cost comparison and could send sensitive traffic to the token provider. Unknown workload classes are now a user error instead of silently being decided on cost.
+- `decide` reasons print money as dollars and cents (`$3.24`, not `$3.2449999999999997`) and say `unknown` when the EC2 cost can't be computed (was `$None`).
+
 ## [0.6.0] - 2026-06-24
 
 ### Added

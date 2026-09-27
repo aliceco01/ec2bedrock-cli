@@ -38,8 +38,17 @@ ec2bedrock profile list
 ec2bedrock profile show qwen27b-awq-l40s
 ec2bedrock estimate --profile qwen27b-awq-l40s --hours 8 --days 22
 ec2bedrock compare --profile qwen27b-awq-l40s --input-tokens 300000000 --output-tokens 60000000 --provider-input-price 0.58 --provider-output-price 3.01
-ec2bedrock decide --workload meeting-mode --input-tokens 3000000 --output-tokens 500000 --sensitive --json
+ec2bedrock decide --workload meeting-mode --input-tokens 528000000 --output-tokens 88000000 --json
+ec2bedrock decide --workload sensitive --input-tokens 528000000 --output-tokens 88000000 --json
 ```
+
+Token counts are totals for the whole window (`--hours` x `--days`, default
+8 x 22 = 176 hours), not per hour. Issue #1's example of 3M input and 0.5M
+output tokens an hour is `--input-tokens 528000000 --output-tokens 88000000`;
+passed as-is, the per-hour numbers flip the verdict to `token-provider`.
+`decide --workload` accepts `batch`, `ci`, `meeting-mode`, `interactive`,
+`off-hours`, `sporadic` and `sensitive`; `sensitive` (or `--sensitive`) always
+routes to EC2.
 
 ## CLI
 

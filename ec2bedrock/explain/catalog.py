@@ -139,7 +139,9 @@ _ESTIMATE = """\
 # ec2bedrock estimate
 
 Offline scheduled EC2 cost estimate. Computes `compute = hourly_usd * hours *
-days` plus EBS costs. No AWS calls are made.
+days` plus EBS costs. No AWS calls are made. `--hours` is instance hours per day
+(more than 0, at most 24); `--days` is the days it runs in the window (default
+22, about a month of workdays). Out-of-range values are a user error (exit 1).
 
 ## Usage
 
@@ -155,6 +157,10 @@ Compare EC2 cost against a token-based provider. Prints a recommendation
 encodes the recommendation: `0` for `ec2`, `20` for `token-provider`, `21` for
 `mixed`.
 
+Token counts are totals for the whole window (`--hours` x `--days`, default
+8 x 22 = 176 hours), not per hour. A per-hour figure must be multiplied by the
+window's hours first, or the verdict can flip.
+
 ## Usage
 
     ec2bedrock compare --profile <name> --input-tokens N --output-tokens N \\
@@ -166,15 +172,19 @@ encodes the recommendation: `0` for `ec2`, `20` for `token-provider`, `21` for
 _DECIDE = """\
 # ec2bedrock decide
 
-Workload router verdict. Given a workload label and token counts, returns a
-recommendation: sensitive workloads route to EC2, sporadic/interactive/off-hours
-workloads route to token-provider, sustained workloads are cost-driven. The
-exit code encodes the decision.
+Workload router verdict. Given a workload class and token counts, returns a
+recommendation: sensitive workloads (`--workload sensitive` or `--sensitive`)
+route to EC2, sporadic/interactive/off-hours workloads route to token-provider,
+batch/ci/meeting-mode workloads are cost-driven. Any other class is a user
+error (exit 1). The exit code encodes the decision.
+
+Token counts are totals for the whole window (`--hours` x `--days`, default
+8 x 22 = 176 hours), not per hour.
 
 ## Usage
 
     ec2bedrock decide --workload W --input-tokens N --output-tokens N
-    ec2bedrock decide --workload W --input-tokens N --output-tokens N --sensitive
+    ec2bedrock decide --workload sensitive --input-tokens N --output-tokens N
     ec2bedrock decide --workload W --input-tokens N --output-tokens N --json
 """
 

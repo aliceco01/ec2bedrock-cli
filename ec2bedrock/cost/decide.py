@@ -17,6 +17,11 @@ from ec2bedrock.cost.profiles import DEFAULT_PROFILES, Profile
 # Workload classes from issue #1 routing rules.
 TOKEN_PROVIDER_WORKLOADS = frozenset({"sporadic", "interactive", "off-hours"})
 SUSTAINED_WORKLOADS = frozenset({"batch", "meeting-mode", "ci"})
+# Issue #1 also lists ``sensitive`` as a workload class hint; it routes exactly
+# like the ``sensitive=True`` flag, never through the cost comparison.
+SENSITIVE_WORKLOAD = "sensitive"
+# Every documented class; the CLI accepts only these.
+WORKLOAD_CLASSES = TOKEN_PROVIDER_WORKLOADS | SUSTAINED_WORKLOADS | {SENSITIVE_WORKLOAD}
 
 
 @dataclass(frozen=True)
@@ -47,14 +52,15 @@ def decide(
     """Return a router verdict for *workload* given token volumes.
 
     Routing rules (issue #1):
-    1. Sensitive workloads stay on self-managed EC2.
+    1. Sensitive workloads (``sensitive=True`` or the ``sensitive`` class) stay
+       on self-managed EC2.
     2. Token-provider workloads (sporadic, interactive, off-hours) route
        to a token provider.
     3. Sustained or unknown workloads are cost-driven (EC2 vs provider).
     """
     prof = profile if profile is not None else DEFAULT_PROFILES["qwen27b-awq-l40s"]
 
-    if sensitive:
+    if sensitive or workload == SENSITIVE_WORKLOAD:
         return Decision("ec2", "sensitive workload kept on self-managed EC2", 0)
 
     if workload in TOKEN_PROVIDER_WORKLOADS:
@@ -70,5 +76,12 @@ def decide(
         input_usd_per_1m=input_usd_per_1m,
         output_usd_per_1m=output_usd_per_1m,
     )
-    reason = f"cost-driven ({workload}): EC2 ${cmp.ec2_usd} vs provider ${cmp.provider_usd}"
+    reason = (
+        f"cost-driven ({workload}): EC2 {_usd(cmp.ec2_usd)} vs provider {_usd(cmp.provider_usd)}"
+    )
     return Decision(cmp.recommendation, reason, cmp.exit_code)
+
+
+def _usd(amount: float | None) -> str:
+    """Dollars and cents for the human reason; ``unknown`` when not computable."""
+    return "unknown" if amount is None else f"${amount:,.2f}"

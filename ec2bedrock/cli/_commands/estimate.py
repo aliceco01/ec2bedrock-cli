@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 
+from ec2bedrock.cli._args import day_count, hours_per_day
 from ec2bedrock.cli._errors import EXIT_USER_ERROR, CliError
 from ec2bedrock.cli._output import emit_result
 from ec2bedrock.cost.config import get_profile, load_config
@@ -36,8 +37,21 @@ def cmd_estimate(args: argparse.Namespace) -> int:
 
 def register(sub: argparse._SubParsersAction) -> None:
     p = sub.add_parser("estimate", help="Estimate scheduled EC2 cost for a profile.")
-    p.add_argument("--profile", required=True)
-    p.add_argument("--hours", type=float, default=8.0)
-    p.add_argument("--days", type=float, default=22.0)
-    p.add_argument("--json", action="store_true")
+    p.add_argument("--profile", required=True, help="Profile name; see 'ec2bedrock profile list'.")
+    p.add_argument(
+        "--hours",
+        type=hours_per_day,
+        default=8.0,
+        help="Instance hours per day, more than 0 and at most 24 (default: %(default)s).",
+    )
+    p.add_argument(
+        "--days",
+        type=day_count,
+        default=22.0,
+        help=(
+            "Days the instance runs in the window "
+            "(default: %(default)s, about a month of workdays)."
+        ),
+    )
+    p.add_argument("--json", action="store_true", help="Emit structured JSON.")
     p.set_defaults(func=cmd_estimate)

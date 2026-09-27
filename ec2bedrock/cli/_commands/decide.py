@@ -4,11 +4,16 @@ from __future__ import annotations
 
 import argparse
 
+from ec2bedrock.cli._args import day_count, hours_per_day, token_count, usd_price
 from ec2bedrock.cli._errors import EXIT_USER_ERROR, CliError
 from ec2bedrock.cli._output import emit_result
 from ec2bedrock.cost.config import get_profile, load_config
-from ec2bedrock.cost.decide import decide
+from ec2bedrock.cost.decide import WORKLOAD_CLASSES, decide
 from ec2bedrock.cost.profiles import ProfileError
+from ec2bedrock.cost.rates import (
+    DEFAULT_PROVIDER_INPUT_USD_PER_1M,
+    DEFAULT_PROVIDER_OUTPUT_USD_PER_1M,
+)
 
 
 def cmd_decide(args: argparse.Namespace) -> int:
@@ -57,14 +62,70 @@ def cmd_decide(args: argparse.Namespace) -> int:
 
 def register(sub: argparse._SubParsersAction) -> None:
     p = sub.add_parser("decide", help="Router verdict: EC2 vs token-provider for a workload.")
-    p.add_argument("--workload", required=True)
-    p.add_argument("--input-tokens", type=int, required=True)
-    p.add_argument("--output-tokens", type=int, required=True)
-    p.add_argument("--sensitive", action="store_true")
-    p.add_argument("--profile", default=None)
-    p.add_argument("--hours", type=float, default=8.0)
-    p.add_argument("--days", type=float, default=22.0)
-    p.add_argument("--provider-input-price", type=float, default=None)
-    p.add_argument("--provider-output-price", type=float, default=None)
-    p.add_argument("--json", action="store_true")
+    p.add_argument(
+        "--workload",
+        required=True,
+        choices=sorted(WORKLOAD_CLASSES),
+        help=(
+            "Workload class. sensitive always routes to EC2; sporadic, interactive and "
+            "off-hours route to a token provider; batch, ci and meeting-mode are decided "
+            "on cost."
+        ),
+    )
+    p.add_argument(
+        "--input-tokens",
+        type=token_count,
+        required=True,
+        help="Total input tokens over the whole window (--hours x --days), not per hour.",
+    )
+    p.add_argument(
+        "--output-tokens",
+        type=token_count,
+        required=True,
+        help="Total output tokens over the whole window (--hours x --days), not per hour.",
+    )
+    p.add_argument(
+        "--sensitive",
+        action="store_true",
+        help="Keep the workload on self-managed EC2 regardless of cost.",
+    )
+    p.add_argument(
+        "--profile",
+        default=None,
+        help="Profile name; see 'ec2bedrock profile list' (default: qwen27b-awq-l40s).",
+    )
+    p.add_argument(
+        "--hours",
+        type=hours_per_day,
+        default=8.0,
+        help="Instance hours per day, more than 0 and at most 24 (default: %(default)s).",
+    )
+    p.add_argument(
+        "--days",
+        type=day_count,
+        default=22.0,
+        help=(
+            "Days the instance runs in the window "
+            "(default: %(default)s, about a month of workdays)."
+        ),
+    )
+    p.add_argument(
+        "--provider-input-price",
+        type=usd_price,
+        default=None,
+        help=(
+            "Token-provider USD per 1M input tokens "
+            f"(default: config.toml, else {DEFAULT_PROVIDER_INPUT_USD_PER_1M})."
+        ),
+    )
+    p.add_argument(
+        "--provider-output-price",
+        type=usd_price,
+        default=None,
+        help=(
+            "Token-provider USD per 1M output tokens "
+            f"(default: config.toml, else {DEFAULT_PROVIDER_OUTPUT_USD_PER_1M})."
+        ),
+    )
+    p.add_argument("--json", action="store_true", help="Emit structured JSON.")
     p.set_defaults(func=cmd_decide)

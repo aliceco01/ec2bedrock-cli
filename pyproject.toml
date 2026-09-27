@@ -1,6 +1,6 @@
 [project]
 name = "ec2bedrock-cli"
-version = "0.6.0"
+version = "0.6.1"
 description = "Agent and CLI to manage EC2 instances running self-hosted LLM inference: warm up an instance and serve an LLM, then hibernate it on idle to power ongoing inference workloads such as ADLC. Built on ec2-cli for the underlying EC2 machine lifecycle."
 readme = "README.md"
 license = "Apache-2.0"
