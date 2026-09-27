@@ -9,7 +9,7 @@ from dataclasses import dataclass
 
 from ec2bedrock.cost import per_machine_cost
 from ec2bedrock.cost.profiles import Profile
-from ec2bedrock.cost.rates import ebs_monthly_usd
+from ec2bedrock.cost.rates import ebs_window_usd
 
 
 @dataclass(frozen=True)
@@ -42,7 +42,9 @@ class Ec2Estimate:
 def estimate(profile: Profile, hours: float, days: float) -> Ec2Estimate:
     """Compute a scheduled-cost estimate for *profile* over *hours* × *days*."""
     running_hours = hours * days
-    ebs = ebs_monthly_usd(profile.storage_gb)
+    ebs = ebs_window_usd(profile.storage_gb, days)
+    # ec2-cli adds ``ebs_monthly`` to compute as-is; pass the EBS for this
+    # window, so a 1-day estimate carries 1/22 of a month of storage, not all of it.
     bd = per_machine_cost(
         hourly_usd=profile.hourly_usd,
         running_hours=running_hours,

@@ -139,7 +139,9 @@ _ESTIMATE = """\
 # ec2bedrock estimate
 
 Offline scheduled EC2 cost estimate. Computes `compute = hourly_usd * hours *
-days` plus EBS costs. No AWS calls are made. `--hours` is instance hours per day
+days` plus EBS costs. EBS bills per month, so the monthly storage charge is
+spread over 22 working days: `--days 22` carries one month, `--days 1` carries
+1/22 of it. No AWS calls are made. `--hours` is instance hours per day
 (more than 0, at most 24); `--days` is the days it runs in the window (default
 22, about a month of workdays). Out-of-range values are a user error (exit 1).
 

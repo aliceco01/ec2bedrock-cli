@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 Format follows [Keep a Changelog](https://keepachangelog.com/). This project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.2] - 2026-09-27
+
+### Fixed
+
+- `estimate` (and the EC2 side of `compare` and `decide`) spreads the monthly EBS charge over the window at 22 working days a month. Before, every estimate carried exactly one month of storage, so `--days 1` showed $16 of storage on $14.89 of compute and `--days 60` still showed $16. The default 8 x 22 result is unchanged ($343.54).
+
 ## [0.6.1] - 2026-09-27
 
 ### Fixed
