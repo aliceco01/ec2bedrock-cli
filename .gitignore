@@ -231,3 +231,6 @@ skills.local.yaml
 
 # devague working state (not committed by default)
 .devague/questions/
+
+# Benchmark run state (instance id, host); results under bench/results are kept.
+bench/.state/
